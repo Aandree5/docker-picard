@@ -29,9 +29,9 @@ RUN set -x && \
     TEMP_PACKAGES+=(software-properties-common) && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    ${KEPT_PACKAGES[@]} \
-    ${TEMP_PACKAGES[@]} \
-    && \
+      ${KEPT_PACKAGES[@]} \
+      ${TEMP_PACKAGES[@]} \
+      && \
     TEMP_PACKAGES+=(gnupg) && \
     # Install pip to allow install of Picard dependencies
     TEMP_PACKAGES+=(python3-pip) && \
@@ -117,23 +117,23 @@ RUN set -x && \
     # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    ${KEPT_PACKAGES[@]} \
-    ${TEMP_PACKAGES[@]} \
-    && \
+      ${KEPT_PACKAGES[@]} \
+      ${TEMP_PACKAGES[@]} \
+      && \
     # Update ca certs
     update-ca-certificates -f && \
     # Build & install OpenSSL v1.1.1
     wget \
-    -O /tmp/openssl-1.1.1w.tar.gz \
-    --progress=dot:giga \
-    https://www.openssl.org/source/openssl-1.1.1w.tar.gz \
-    && \
+      -O /tmp/openssl-1.1.1w.tar.gz \
+      --progress=dot:giga \
+      https://www.openssl.org/source/openssl-1.1.1w.tar.gz \
+      && \
     mkdir -p /src/openssl && \
     tar \
-    xzvf \
-    /tmp/openssl-1.1.1w.tar.gz \
-    -C /src/openssl \
-    && \
+      xzvf \
+      /tmp/openssl-1.1.1w.tar.gz \
+      -C /src/openssl \
+      && \
     pushd /src/openssl/openssl-* && \
     ./config && \
     make test && \
@@ -158,12 +158,12 @@ RUN set -x && \
     BRANCH_CHROMAPRINT="v1.4.3" && \
     git checkout "tags/${BRANCH_CHROMAPRINT}" && \
     cmake \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TOOLS=ON \
-    -DBUILD_TESTS=ON \
-    -DGTEST_SOURCE_DIR=/src/googletest/googletest \
-    -DGTEST_INCLUDE_DIR=/src/googletest/googletest/include . \
-    && \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DBUILD_TOOLS=ON \
+      -DBUILD_TESTS=ON \
+      -DGTEST_SOURCE_DIR=/src/googletest/googletest \
+      -DGTEST_INCLUDE_DIR=/src/googletest/googletest/include . \
+      && \
     make && \
     make check && \
     make install && \
@@ -205,25 +205,25 @@ RUN set -x && \
     ln -s /usr/local/bin/fpcalc /usr/bin/fpcalc && \
     # Add optical drive script from jlesage/docker-handbrake
     wget \
-    --progress=dot:giga \
-    https://raw.githubusercontent.com/jlesage/docker-handbrake/6eb5567bcc29c2441507cb8cbd276293ec1790c8/rootfs/etc/cont-init.d/54-check-optical-drive.sh \
-    -O /etc/cont-init.d/54-check-optical-drive.sh \
-    && \
+      --progress=dot:giga \
+      https://raw.githubusercontent.com/jlesage/docker-handbrake/6eb5567bcc29c2441507cb8cbd276293ec1790c8/rootfs/etc/cont-init.d/54-check-optical-drive.sh \
+      -O /etc/cont-init.d/54-check-optical-drive.sh \
+      && \
     chmod +x /etc/cont-init.d/54-check-optical-drive.sh && \
     # Security updates / fix for issue #37 (https://github.com/mikenye/docker-picard/issues/37)    
     /src/trivy --cache-dir /tmp/trivy fs --vuln-type os -f json --ignore-unfixed --no-progress -o /tmp/trivy.out / && \
     apt-get install -y --no-install-recommends $(jq .[].Vulnerabilities < /tmp/trivy.out | grep '"PkgName":' | tr -s ' ' | cut -d ':' -f 2 | tr -d ' ",' | uniq) && \
     # Install streaming_extractor_music
     wget \
-    -O /tmp/essentia-extractor-linux-x86_64.tar.gz \
-    --progress=dot:giga \
-    'https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/extractors/essentia-extractor-v2.1_beta2-linux-x86_64.tar.gz' \
-    && \
+      -O /tmp/essentia-extractor-linux-x86_64.tar.gz \
+      --progress=dot:giga \
+      'https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/extractors/essentia-extractor-v2.1_beta2-linux-x86_64.tar.gz' \
+      && \
     tar \
-    xzvf \
-    /tmp/essentia-extractor-linux-x86_64.tar.gz \
-    -C /usr/local/sbin \
-    && \
+      xzvf \
+      /tmp/essentia-extractor-linux-x86_64.tar.gz \
+      -C /usr/local/sbin \
+      && \
     # Build & install rsgain
     # Get latest taglib version from tags
     TAGLIB_TAG=$(git -c 'versionsort.suffix=-' ls-remote --tags https://github.com/taglib/taglib.git | tr -s ' ' | cut -d '/' -f 3 | grep -vi 'rc' | grep -vi 'beta' | grep -vi '\^{}' | sort -V | tail -1) && \
@@ -259,9 +259,9 @@ RUN set -x && \
     find /var/log -type f -exec truncate --size=0 {} \; && \
     # Install Chinese Fonts
     wget \
-    --progress=dot:giga \
-    -O /usr/share/fonts/SimSun.ttf \
-    "https://github.com/micmro/Stylify-Me/blob/main/.fonts/SimSun.ttf?raw=true" && \
+      --progress=dot:giga \
+      -O /usr/share/fonts/SimSun.ttf \
+      "https://github.com/micmro/Stylify-Me/blob/main/.fonts/SimSun.ttf?raw=true" && \
     fc-cache && \
     # Capture picard version
     mkdir -p /tmp/run/user/app && \
